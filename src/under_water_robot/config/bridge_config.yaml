@@ -1,0 +1,67 @@
+# bridge_config.yaml
+
+# 配置 8 个推进器 (Fan) 的控制命令
+# 方向：ROS_TO_GZ (对应原代码中的 ])
+- ros_topic_name: "/model/UnderWater_Robot/joint/fan1/cmd_thrust"
+  gz_topic_name: "/model/UnderWater_Robot/joint/fan1/cmd_thrust"
+  ros_type_name: "std_msgs/msg/Float64"
+  gz_type_name: "ignition.msgs.Double"
+  direction: ROS_TO_GZ
+
+- ros_topic_name: "/model/UnderWater_Robot/joint/fan2/cmd_thrust"
+  gz_topic_name: "/model/UnderWater_Robot/joint/fan2/cmd_thrust"
+  ros_type_name: "std_msgs/msg/Float64"
+  gz_type_name: "ignition.msgs.Double"
+  direction: ROS_TO_GZ
+
+- ros_topic_name: "/model/UnderWater_Robot/joint/fan3/cmd_thrust"
+  gz_topic_name: "/model/UnderWater_Robot/joint/fan3/cmd_thrust"
+  ros_type_name: "std_msgs/msg/Float64"
+  gz_type_name: "ignition.msgs.Double"
+  direction: ROS_TO_GZ
+
+- ros_topic_name: "/model/UnderWater_Robot/joint/fan4/cmd_thrust"
+  gz_topic_name: "/model/UnderWater_Robot/joint/fan4/cmd_thrust"
+  ros_type_name: "std_msgs/msg/Float64"
+  gz_type_name: "ignition.msgs.Double"
+  direction: ROS_TO_GZ
+
+- ros_topic_name: "/model/UnderWater_Robot/joint/fan5/cmd_thrust"
+  gz_topic_name: "/model/UnderWater_Robot/joint/fan5/cmd_thrust"
+  ros_type_name: "std_msgs/msg/Float64"
+  gz_type_name: "ignition.msgs.Double"
+  direction: ROS_TO_GZ
+
+- ros_topic_name: "/model/UnderWater_Robot/joint/fan6/cmd_thrust"
+  gz_topic_name: "/model/UnderWater_Robot/joint/fan6/cmd_thrust"
+  ros_type_name: "std_msgs/msg/Float64"
+  gz_type_name: "ignition.msgs.Double"
+  direction: ROS_TO_GZ
+
+- ros_topic_name: "/model/UnderWater_Robot/joint/fan7/cmd_thrust"
+  gz_topic_name: "/model/UnderWater_Robot/joint/fan7/cmd_thrust"
+  ros_type_name: "std_msgs/msg/Float64"
+  gz_type_name: "ignition.msgs.Double"
+  direction: ROS_TO_GZ
+
+- ros_topic_name: "/model/UnderWater_Robot/joint/fan8/cmd_thrust"
+  gz_topic_name: "/model/UnderWater_Robot/joint/fan8/cmd_thrust"
+  ros_type_name: "std_msgs/msg/Float64"
+  gz_type_name: "ignition.msgs.Double"
+  direction: ROS_TO_GZ
+
+# 配置里程计 (Odometry)
+# 方向：GZ_TO_ROS (对应原代码中的 [)
+- ros_topic_name: "/model/UnderWater_Robot/odometry"
+  gz_topic_name: "/model/UnderWater_Robot/odometry"
+  ros_type_name: "nav_msgs/msg/Odometry"
+  gz_type_name: "ignition.msgs.Odometry"
+  direction: GZ_TO_ROS
+
+# 配置坐标变换 (TF)
+# 注意：这里直接将 ros_topic_name 设置为 "/tf"，实现了原代码中 remappings 的效果
+- ros_topic_name: "/tf"
+  gz_topic_name: "/model/UnderWater_Robot/pose"
+  ros_type_name: "tf2_msgs/msg/TFMessage"
+  gz_type_name: "ignition.msgs.Pose_V"
+  direction: GZ_TO_ROS

@@ -1,0 +1,602 @@
+<sdf version='1.9'>
+  <model name='UnderWater_Robot'>
+
+    <plugin
+      filename="ignition-gazebo-odometry-publisher-system"
+      name="ignition::gazebo::systems::OdometryPublisher">
+      <odom_frame>world</odom_frame>
+      <robot_base_frame>base_link</robot_base_frame>
+      <update_frequency>50</update_frequency>
+      <dimensions>3</dimensions>
+    </plugin>
+
+    <plugin
+  filename="libignition-gazebo-pose-publisher-system.so"
+  name="ignition::gazebo::systems::PosePublisher">
+  
+  <publish_model_pose>true</publish_model_pose>
+  
+  <publish_link_pose>true</publish_link_pose>
+  
+  <update_frequency>50</update_frequency>
+
+  <use_pose_vector_msg>true</use_pose_vector_msg>
+</plugin>
+
+
+    <!-- 流体动力学插件：模拟水下机器人的水动力特性 -->
+    <plugin
+      filename="ignition-gazebo-hydrodynamics-system"
+      name="ignition::gazebo::systems::Hydrodynamics">
+
+      <!-- 应用流体动力学的链接名称 -->
+      <link_name>base_link</link_name>
+
+      <!-- 流体密度（kg/m³），淡水约1000，海水约1025 -->
+      <fluid_density>1000</fluid_density>
+      <xDotU>-2.0</xDotU>
+      <yDotV>-2.0</yDotV>
+      <zDotW>-10.0</zDotW>
+
+      <xU>-25.0</xU>
+      <yV>-25.0</yV>
+      <zW>-25.0</zW>
+      <kP>-5.0</kP>
+      <mQ>-5.0</mQ>
+      <nR>-5.0</nR>
+
+      <xUabsU>-10</xUabsU>
+      <yVabsV>-10</yVabsV>
+      <zWabsW>-10</zWabsW>
+
+    </plugin>
+
+
+    <link name='base_link'>
+      <inertial>
+        <pose>-0.0059136 -2.0566e-18 -0.099621 0 0 0</pose>
+        <mass>31.677</mass>
+        <inertia>
+          <ixx>0.31402999999999998</ixx>
+          <ixy>0</ixy>
+          <ixz>0</ixz>
+          <iyy>0.46765000000000001</iyy>
+          <iyz>0</iyz>
+          <izz>0.60275999999999996</izz>
+        </inertia>
+      </inertial>
+      <collision name='base_link_collision'>
+        <pose>0 0 0 0 0 0</pose>
+        <geometry>
+          <box>
+            <size>0.6 0.6 0.15</size>
+          </box>
+        </geometry>
+      </collision>
+      <visual name='base_link_visual'>
+        <pose>0 0 0 0 0 0</pose>
+        <geometry>
+          <mesh>
+            <scale>1 1 1</scale>
+            <uri>
+              ./meshes/base_link.STL</uri>
+          </mesh>
+        </geometry>
+        <material>
+          <diffuse>0 0 1 0.21</diffuse>
+          <ambient>0 0 1 0.21</ambient>
+        </material>
+      </visual>
+    </link>
+    <joint name='fan1' type='revolute'>
+      <pose relative_to='base_link'>0.17108 0.18031 0 0 0 0</pose>
+      <parent>base_link</parent>
+      <child>joint1</child>
+      <axis>
+        <xyz>0 0 1</xyz>
+        <limit>
+          <lower>-1000000000</lower>
+          <upper>1000000000</upper>
+          <effort>50</effort>
+          <velocity>200</velocity>
+        </limit>
+        <dynamics>
+          <spring_reference>0</spring_reference>
+          <spring_stiffness>0</spring_stiffness>
+        </dynamics>
+      </axis>
+    </joint>
+    <link name='joint1'>
+      <pose relative_to='fan1'>0 0 0 0 0 0</pose>
+      <inertial>
+        <pose>8.3267e-16 -2.6923e-15 -4.1633e-17 0 0 0</pose>
+        <mass>0.013259</mass>
+        <inertia>
+          <ixx>0.0001</ixx>
+          <ixy>0</ixy>
+          <ixz>0</ixz>
+          <iyy>0.0001</iyy>
+          <iyz>0</iyz>
+          <izz>0.0001</izz>
+        </inertia>
+      </inertial>
+
+      <visual name='joint1_visual'>
+        <pose>0 0 0 0 0 0</pose>
+        <geometry>
+          <mesh>
+            <scale>1 1 1</scale>
+            <uri>
+              ./meshes/joint.STL</uri>
+          </mesh>
+        </geometry>
+        <material>
+          <diffuse>1 0 0 1</diffuse>
+          <ambient>1 0 0 1</ambient>
+        </material>
+      </visual>
+
+    </link>
+    <joint name='fan2' type='revolute'>
+      <pose relative_to='base_link'>0.17108 -0.18031 0 0 0 0</pose>
+      <parent>base_link</parent>
+      <child>joint2</child>
+      <axis>
+        <xyz>0 0 1</xyz>
+        <limit>
+          <lower>-1000000000</lower>
+          <upper>1000000000</upper>
+          <effort>50</effort>
+          <velocity>200</velocity>
+        </limit>
+        <dynamics>
+          <spring_reference>0</spring_reference>
+          <spring_stiffness>0</spring_stiffness>
+        </dynamics>
+      </axis>
+    </joint>
+    <link name='joint2'>
+      <pose relative_to='fan2'>0 0 0 0 0 0</pose>
+      <inertial>
+        <pose>-1.9151e-15 -3.3029e-15 -1.9429e-16 0 0 0</pose>
+        <mass>0.013259</mass>
+        <inertia>
+          <ixx>0.0001</ixx>
+          <ixy>0</ixy>
+          <ixz>0</ixz>
+          <iyy>0.0001</iyy>
+          <iyz>0</iyz>
+          <izz>0.0001</izz>
+        </inertia>
+      </inertial>
+
+      <visual name='joint2_visual'>
+        <pose>0 0 0 0 0 0</pose>
+        <geometry>
+          <mesh>
+            <scale>1 1 1</scale>
+            <uri>
+              ./meshes/joint.STL</uri>
+          </mesh>
+        </geometry>
+        <material>
+          <diffuse>0 0 1 1</diffuse>
+          <ambient>0 0 1 1</ambient>
+        </material>
+      </visual>
+
+    </link>
+    <joint name='fan3' type='revolute'>
+      <pose relative_to='base_link'>-0.18955 -0.18031 0 0 0 0</pose>
+      <parent>base_link</parent>
+      <child>joint3</child>
+      <axis>
+        <xyz>0 0 1</xyz>
+        <limit>
+          <lower>-1000000000</lower>
+          <upper>1000000000</upper>
+          <effort>50</effort>
+          <velocity>200</velocity>
+        </limit>
+        <dynamics>
+          <spring_reference>0</spring_reference>
+          <spring_stiffness>0</spring_stiffness>
+        </dynamics>
+      </axis>
+    </joint>
+    <link name='joint3'>
+      <pose relative_to='fan3'>0 0 0 0 0 0</pose>
+      <inertial>
+        <pose>2.7756e-16 -9.4369e-16 2.7756e-17 0 0 0</pose>
+        <mass>0.013259</mass>
+        <inertia>
+          <ixx>0.0001</ixx>
+          <ixy>0</ixy>
+          <ixz>0</ixz>
+          <iyy>0.0001</iyy>
+          <iyz>0</iyz>
+          <izz>0.0001</izz>
+        </inertia>
+      </inertial>
+
+      <visual name='joint3_visual'>
+        <pose>0 0 0 0 0 0</pose>
+        <geometry>
+          <mesh>
+            <scale>1 1 1</scale>
+            <uri>
+              ./meshes/joint.STL</uri>
+          </mesh>
+        </geometry>
+        <material>
+          <diffuse>0 0 1 1</diffuse>
+          <ambient>0 0 1 1</ambient>
+        </material>
+      </visual>
+    </link>
+    <joint name='fan4' type='revolute'>
+      <pose relative_to='base_link'>-0.18955 0.18031 0 0 0 0</pose>
+      <parent>base_link</parent>
+      <child>joint4</child>
+      <axis>
+        <xyz>0 0 1</xyz>
+        <limit>
+          <lower>-1000000000</lower>
+          <upper>1000000000</upper>
+          <effort>50</effort>
+          <velocity>200</velocity>
+        </limit>
+        <dynamics>
+          <spring_reference>0</spring_reference>
+          <spring_stiffness>0</spring_stiffness>
+        </dynamics>
+      </axis>
+    </joint>
+    <link name='joint4'>
+      <pose relative_to='fan4'>0 0 0 0 0 0</pose>
+      <inertial>
+        <pose>-2.4702e-15 1.9429e-16 2.7756e-17 0 0 0</pose>
+        <mass>0.013259</mass>
+        <inertia>
+          <ixx>0.0001</ixx>
+          <ixy>0</ixy>
+          <ixz>0</ixz>
+          <iyy>0.0001</iyy>
+          <iyz>0</iyz>
+          <izz>0.0001</izz>
+        </inertia>
+      </inertial>
+
+      <visual name='joint4_visual'>
+        <pose>0 0 0 0 0 0</pose>
+        <geometry>
+          <mesh>
+            <scale>1 1 1</scale>
+            <uri>
+              ./meshes/joint.STL</uri>
+          </mesh>
+        </geometry>
+        <material>
+          <diffuse>0 0 1 1</diffuse>
+          <ambient>0 0 1 1</ambient>
+        </material>
+      </visual>
+    </link>
+    <joint name='fan5' type='revolute'>
+      <pose relative_to='base_link'>0.25239 -0.26163 0 0 0 0</pose>
+      <parent>base_link</parent>
+      <child>joint5</child>
+      <axis>
+        <xyz>-0.70711 -0.70711 0</xyz>
+        <limit>
+          <lower>-1000000000</lower>
+          <upper>1000000000</upper>
+          <effort>50</effort>
+          <velocity>200</velocity>
+        </limit>
+        <dynamics>
+          <spring_reference>0</spring_reference>
+          <spring_stiffness>0</spring_stiffness>
+        </dynamics>
+      </axis>
+    </joint>
+    <link name='joint5'>
+      <pose relative_to='fan5'>0 0 0 0 0 0</pose>
+      <inertial>
+        <pose>1.1627e-08 1.1627e-08 -1.9706e-15 0 0 0</pose>
+        <mass>0.013259</mass>
+        <inertia>
+          <ixx>0.0001</ixx>
+          <ixy>0</ixy>
+          <ixz>0</ixz>
+          <iyy>0.0001</iyy>
+          <iyz>0</iyz>
+          <izz>0.0001</izz>
+        </inertia>
+      </inertial>
+
+      <visual name='joint5_visual'>
+        <pose>0 0 0 0 0 0</pose>
+        <geometry>
+          <mesh>
+            <scale>1 1 1</scale>
+            <uri>
+              ./meshes/joint.STL</uri>
+          </mesh>
+        </geometry>
+        <material>
+          <diffuse>0 0 1 1</diffuse>
+          <ambient>0 0 1 1</ambient>
+        </material>
+      </visual>
+    </link>
+    <joint name='fan6' type='revolute'>
+      <pose relative_to='base_link'>0.25239 0.26163 0 0 0 0</pose>
+      <parent>base_link</parent>
+      <child>joint6</child>
+      <axis>
+        <xyz>-0.70711 0.70711 0</xyz>
+        <limit>
+          <lower>-1000000000</lower>
+          <upper>1000000000</upper>
+          <effort>50</effort>
+          <velocity>200</velocity>
+        </limit>
+        <dynamics>
+          <spring_reference>0</spring_reference>
+          <spring_stiffness>0</spring_stiffness>
+        </dynamics>
+      </axis>
+    </joint>
+    <link name='joint6'>
+      <pose relative_to='fan6'>0 0 0 0 0 0</pose>
+      <inertial>
+        <pose>-2.2587e-08 2.2587e-08 -6.245e-16 0 0 0</pose>
+        <mass>0.013259</mass>
+        <inertia>
+          <ixx>0.0001</ixx>
+          <ixy>0</ixy>
+          <ixz>0</ixz>
+          <iyy>0.0001</iyy>
+          <iyz>0</iyz>
+          <izz>0.0001</izz>
+        </inertia>
+      </inertial>
+
+      <visual name='joint6_visual'>
+        <pose>0 0 0 0 0 0</pose>
+        <geometry>
+          <mesh>
+            <scale>1 1 1</scale>
+            <uri>
+              ./meshes/joint.STL</uri>
+          </mesh>
+        </geometry>
+        <material>
+          <diffuse>0 0 1 1</diffuse>
+          <ambient>0 0 1 1</ambient>
+        </material>
+      </visual>
+    </link>
+    <joint name='fan7' type='revolute'>
+      <pose relative_to='base_link'>-0.27087 -0.26163 0 0 0 0</pose>
+      <parent>base_link</parent>
+      <child>joint7</child>
+      <axis>
+        <xyz>0.70711 -0.70711 0</xyz>
+        <limit>
+          <lower>-1000000000</lower>
+          <upper>1000000000</upper>
+          <effort>50</effort>
+          <velocity>200</velocity>
+        </limit>
+        <dynamics>
+          <spring_reference>0</spring_reference>
+          <spring_stiffness>0</spring_stiffness>
+        </dynamics>
+      </axis>
+    </joint>
+    <link name='joint7'>
+      <pose relative_to='fan7'>0 0 0 0 0 0</pose>
+      <inertial>
+        <pose>2.2587e-08 -2.2587e-08 1.471e-15 0 0 0</pose>
+        <mass>0.013259</mass>
+        <inertia>
+          <ixx>0.0001</ixx>
+          <ixy>0</ixy>
+          <ixz>0</ixz>
+          <iyy>0.0001</iyy>
+          <iyz>0</iyz>
+          <izz>0.0001</izz>
+        </inertia>
+      </inertial>
+
+      <visual name='joint7_visual'>
+        <pose>0 0 0 0 0 0</pose>
+        <geometry>
+          <mesh>
+            <scale>1 1 1</scale>
+            <uri>
+              ./meshes/joint.STL</uri>
+          </mesh>
+        </geometry>
+        <material>
+          <diffuse>0 0 1 1</diffuse>
+          <ambient>0 0 1 1</ambient>
+        </material>
+      </visual>
+    </link>
+    <joint name='fan8' type='revolute'>
+      <pose relative_to='base_link'>-0.27087 0.26163 0 0 0 0</pose>
+      <parent>base_link</parent>
+      <child>joint8</child>
+      <axis>
+        <xyz>0.70711 0.70711 0</xyz>
+        <limit>
+          <lower>-1000000000</lower>
+          <upper>1000000000</upper>
+          <effort>50</effort>
+          <velocity>200</velocity>
+        </limit>
+        <dynamics>
+          <spring_reference>0</spring_reference>
+          <spring_stiffness>0</spring_stiffness>
+        </dynamics>
+      </axis>
+    </joint>
+    <link name='joint8'>
+      <pose relative_to='fan8'>0 0 0 0 0 0</pose>
+      <inertial>
+        <pose>3.6059e-08 3.6059e-08 9.2981e-16 0 0 0</pose>
+        <mass>0.013259</mass>
+        <inertia>
+          <ixx>0.0001</ixx>
+          <ixy>0</ixy>
+          <ixz>0</ixz>
+          <iyy>0.0001</iyy>
+          <iyz>0</iyz>
+          <izz>0.0001</izz>
+        </inertia>
+      </inertial>
+
+      <visual name='joint8_visual'>
+        <pose>0 0 0 0 0 0</pose>
+        <geometry>
+          <mesh>
+            <scale>1 1 1</scale>
+            <uri>
+              ./meshes/joint.STL</uri>
+          </mesh>
+        </geometry>
+        <material>
+          <diffuse>0 0 1 1</diffuse>
+          <ambient>0 0 1 1</ambient>
+        </material>
+      </visual>
+    </link>
+
+
+    <plugin filename="ignition-gazebo-thruster-system" name="ignition::gazebo::systems::Thruster">
+      <namespace>UnderWater_Robot</namespace>
+      <joint_name>fan1</joint_name>
+      <thrust_coefficient>0.002</thrust_coefficient>
+      <fluid_density>1000</fluid_density>
+      <propeller_diameter>0.1</propeller_diameter>
+      <velocity_control>true</velocity_control>
+    </plugin>
+
+    <plugin filename="ignition-gazebo-thruster-system" name="ignition::gazebo::systems::Thruster">
+      <namespace>UnderWater_Robot</namespace>
+      <joint_name>fan2</joint_name>
+      <thrust_coefficient>0.002</thrust_coefficient>
+      <fluid_density>1000</fluid_density>
+      <propeller_diameter>0.1</propeller_diameter>
+      <velocity_control>true</velocity_control>
+    </plugin>
+
+    <plugin filename="ignition-gazebo-thruster-system" name="ignition::gazebo::systems::Thruster">
+      <namespace>UnderWater_Robot</namespace>
+      <joint_name>fan3</joint_name>
+      <thrust_coefficient>0.002</thrust_coefficient>
+      <fluid_density>1000</fluid_density>
+      <propeller_diameter>0.1</propeller_diameter>
+      <velocity_control>true</velocity_control>
+    </plugin>
+
+
+    <plugin filename="ignition-gazebo-thruster-system" name="ignition::gazebo::systems::Thruster">
+      <namespace>UnderWater_Robot</namespace>
+      <joint_name>fan4</joint_name>
+      <thrust_coefficient>0.002</thrust_coefficient>
+      <fluid_density>1000</fluid_density>
+      <propeller_diameter>0.1</propeller_diameter>
+      <velocity_control>true</velocity_control>
+    </plugin>
+
+<plugin filename="ignition-gazebo-thruster-system" name="ignition::gazebo::systems::Thruster">
+      <namespace>UnderWater_Robot</namespace>
+      <joint_name>fan5</joint_name>
+      <thrust_coefficient>0.002</thrust_coefficient>
+      <fluid_density>1000</fluid_density>
+      <propeller_diameter>0.1</propeller_diameter>
+      <velocity_control>true</velocity_control>
+    </plugin>
+    <plugin filename="ignition-gazebo-thruster-system" name="ignition::gazebo::systems::Thruster">
+      <namespace>UnderWater_Robot</namespace>
+      <joint_name>fan6</joint_name>
+      <thrust_coefficient>0.002</thrust_coefficient>
+      <fluid_density>1000</fluid_density>
+      <propeller_diameter>0.1</propeller_diameter>
+      <velocity_control>true</velocity_control>
+    </plugin>
+    <plugin filename="ignition-gazebo-thruster-system" name="ignition::gazebo::systems::Thruster">
+      <namespace>UnderWater_Robot</namespace>
+      <joint_name>fan7</joint_name>
+      <thrust_coefficient>0.002</thrust_coefficient>
+      <fluid_density>1000</fluid_density>
+      <propeller_diameter>0.1</propeller_diameter>
+      <velocity_control>true</velocity_control>
+    </plugin>
+    <plugin filename="ignition-gazebo-thruster-system" name="ignition::gazebo::systems::Thruster">
+      <namespace>UnderWater_Robot</namespace>
+      <joint_name>fan8</joint_name>
+      <thrust_coefficient>0.002</thrust_coefficient>
+      <fluid_density>1000</fluid_density>
+      <propeller_diameter>0.1</propeller_diameter>
+      <velocity_control>true</velocity_control>
+    </plugin>
+
+
+
+
+    <plugin
+      filename="ignition-gazebo-joint-state-publisher-system"
+      name="ignition::gazebo::systems::JointStatePublisher">
+    </plugin>
+
+    <plugin filename="libTorquePlugin.so" name="under_robot::TorquePlugin">
+      <link_name>base_link</link_name>
+      <joint_name>fan1</joint_name>
+      <k_torque>0.02</k_torque>
+    </plugin>
+
+    <plugin filename="libTorquePlugin.so" name="under_robot::TorquePlugin">
+      <link_name>base_link</link_name>
+      <joint_name>fan2</joint_name>
+      <k_torque>-0.02</k_torque>
+    </plugin>
+    <plugin filename="libTorquePlugin.so" name="under_robot::TorquePlugin">
+      <link_name>base_link</link_name>
+      <joint_name>fan3</joint_name>
+      <k_torque>0.02</k_torque>
+    </plugin>
+
+    <plugin filename="libTorquePlugin.so" name="under_robot::TorquePlugin">
+      <link_name>base_link</link_name>
+      <joint_name>fan4</joint_name>
+      <k_torque>-0.02</k_torque>
+    </plugin>
+ <plugin filename="libTorquePlugin.so" name="under_robot::TorquePlugin">
+      <link_name>base_link</link_name>
+      <joint_name>fan5</joint_name>
+      <k_torque>-0.0200</k_torque>
+    </plugin>
+ 
+    <plugin filename="libTorquePlugin.so" name="under_robot::TorquePlugin">
+      <link_name>base_link</link_name>
+      <joint_name>fan6</joint_name>
+      <k_torque>0.0200</k_torque>
+    </plugin>
+    <plugin filename="libTorquePlugin.so" name="under_robot::TorquePlugin">
+      <link_name>base_link</link_name>
+      <joint_name>fan7</joint_name>
+      <k_torque>0.0200</k_torque>
+    </plugin>
+    <plugin filename="libTorquePlugin.so" name="under_robot::TorquePlugin">
+      <link_name>base_link</link_name>
+      <joint_name>fan8</joint_name>
+      <k_torque>-0.0200</k_torque>
+    </plugin>
+
+  </model>
+</sdf>

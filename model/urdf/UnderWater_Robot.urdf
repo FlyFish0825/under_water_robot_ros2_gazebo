@@ -1,0 +1,511 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- This URDF was automatically created by SolidWorks to URDF Exporter! Originally created by Stephen Brawner (brawner@gmail.com) 
+     Commit Version: 1.6.0-4-g7f85cfe  Build Version: 1.6.7995.38578
+     For more information, please see http://wiki.ros.org/sw_urdf_exporter -->
+<robot
+  name="ROV_Product04">
+  <link
+    name="base_link">
+    <inertial>
+      <origin
+        xyz="-0.0059136 -2.0566E-18 -0.099621"
+        rpy="0 0 0" />
+      <mass
+        value="31.677" />
+      <inertia
+        ixx="0.31403"
+        ixy="-4.6699E-09"
+        ixz="7.1364E-09"
+        iyy="0.46765"
+        iyz="-1.2736E-06"
+        izz="0.60276" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://ROV_Product04/meshes/base_link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0 0 1 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://ROV_Product04/meshes/base_link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <link
+    name="joint1">
+    <inertial>
+      <origin
+        xyz="8.3267E-16 -2.6923E-15 -4.1633E-17"
+        rpy="0 0 0" />
+      <mass
+        value="0.013259" />
+      <inertia
+        ixx="3.471E-06"
+        ixy="9.5493E-19"
+        ixz="3.6402E-20"
+        iyy="3.471E-06"
+        iyz="-5.5654E-20"
+        izz="6.0785E-06" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0.097858"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://ROV_Product04/meshes/joint1.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0 0 1 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0.097858"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://ROV_Product04/meshes/joint1.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="fan1"
+    type="revolute">
+    <origin
+      xyz="0.17108 0.18031 -0.097858"
+      rpy="0 0 0" />
+    <parent
+      link="base_link" />
+    <child
+      link="joint1" />
+    <axis
+      xyz="0 0 1" />
+    <limit
+      lower="1000000000"
+      upper="1000000000"
+      effort="0"
+      velocity="0" />
+  </joint>
+  <link
+    name="joint2">
+    <inertial>
+      <origin
+        xyz="-1.9151E-15 -3.3029E-15 -1.9429E-16"
+        rpy="0 0 0" />
+      <mass
+        value="0.013259" />
+      <inertia
+        ixx="3.471E-06"
+        ixy="-2.6061E-19"
+        ixz="8.5064E-20"
+        iyy="3.471E-06"
+        iyz="6.611E-21"
+        izz="6.0785E-06" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0.097858"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://ROV_Product04/meshes/joint2.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0 0 1 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0.097858"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://ROV_Product04/meshes/joint2.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="fan2"
+    type="revolute">
+    <origin
+      xyz="0.17108 -0.18031 -0.097858"
+      rpy="0 0 0" />
+    <parent
+      link="base_link" />
+    <child
+      link="joint2" />
+    <axis
+      xyz="0 0 1" />
+    <limit
+      lower="1000000000"
+      upper="1000000000"
+      effort="0"
+      velocity="0" />
+  </joint>
+  <link
+    name="joint3">
+    <inertial>
+      <origin
+        xyz="2.7756E-16 -9.4369E-16 2.7756E-17"
+        rpy="0 0 0" />
+      <mass
+        value="0.013259" />
+      <inertia
+        ixx="3.471E-06"
+        ixy="1.907E-19"
+        ixz="-6.5454E-20"
+        iyy="3.471E-06"
+        iyz="-6.695E-21"
+        izz="6.0785E-06" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0.097858"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://ROV_Product04/meshes/joint3.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0 0 1 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0.097858"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://ROV_Product04/meshes/joint3.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="fan3"
+    type="revolute">
+    <origin
+      xyz="-0.18955 -0.18031 -0.097858"
+      rpy="0 0 0" />
+    <parent
+      link="base_link" />
+    <child
+      link="joint3" />
+    <axis
+      xyz="0 0 1" />
+    <limit
+      lower="1000000000"
+      upper="1000000000"
+      effort="0"
+      velocity="0" />
+  </joint>
+  <link
+    name="joint4">
+    <inertial>
+      <origin
+        xyz="-2.4702E-15 1.9429E-16 2.7756E-17"
+        rpy="0 0 0" />
+      <mass
+        value="0.013259" />
+      <inertia
+        ixx="3.471E-06"
+        ixy="7.9862E-20"
+        ixz="1.3199E-19"
+        iyy="3.471E-06"
+        iyz="-2.5824E-20"
+        izz="6.0785E-06" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0.097858"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://ROV_Product04/meshes/joint4.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0 0 1 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0.097858"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://ROV_Product04/meshes/joint4.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="fan4"
+    type="revolute">
+    <origin
+      xyz="-0.18955 0.18031 -0.097858"
+      rpy="0 0 0" />
+    <parent
+      link="base_link" />
+    <child
+      link="joint4" />
+    <axis
+      xyz="0 0 1" />
+    <limit
+      lower="1000000000"
+      upper="1000000000"
+      effort="0"
+      velocity="0" />
+  </joint>
+  <link
+    name="joint5">
+    <inertial>
+      <origin
+        xyz="1.1627E-08 1.1627E-08 -1.9706E-15"
+        rpy="0 0 0" />
+      <mass
+        value="0.013259" />
+      <inertia
+        ixx="4.7748E-06"
+        ixy="1.3037E-06"
+        ixz="2.4169E-19"
+        iyy="4.7748E-06"
+        iyz="-1.7827E-19"
+        izz="3.471E-06" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0.097858"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://ROV_Product04/meshes/joint5.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0 0 1 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0.097858"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://ROV_Product04/meshes/joint5.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="fan5"
+    type="revolute">
+    <origin
+      xyz="0.25239 -0.26163 -0.097858"
+      rpy="0 0 0" />
+    <parent
+      link="base_link" />
+    <child
+      link="joint5" />
+    <axis
+      xyz="-0.70711 -0.70711 0" />
+    <limit
+      lower="1000000000"
+      upper="1000000000"
+      effort="0"
+      velocity="0" />
+  </joint>
+  <link
+    name="joint6">
+    <inertial>
+      <origin
+        xyz="-2.2587E-08 2.2587E-08 -6.245E-16"
+        rpy="0 0 0" />
+      <mass
+        value="0.013259" />
+      <inertia
+        ixx="4.7745E-06"
+        ixy="-1.3037E-06"
+        ixz="8.2098E-12"
+        iyy="4.7745E-06"
+        iyz="8.2098E-12"
+        izz="3.471E-06" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0.097858"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://ROV_Product04/meshes/joint6.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0 0 1 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0.097858"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://ROV_Product04/meshes/joint6.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="fan6"
+    type="revolute">
+    <origin
+      xyz="0.25239 0.26163 -0.097858"
+      rpy="0 0 0" />
+    <parent
+      link="base_link" />
+    <child
+      link="joint6" />
+    <axis
+      xyz="-0.70711 0.70711 0" />
+    <limit
+      lower="1000000000"
+      upper="1000000000"
+      effort="0"
+      velocity="0" />
+  </joint>
+  <link
+    name="joint7">
+    <inertial>
+      <origin
+        xyz="2.2587E-08 -2.2587E-08 1.471E-15"
+        rpy="0 0 0" />
+      <mass
+        value="0.013259" />
+      <inertia
+        ixx="4.7745E-06"
+        ixy="-1.3037E-06"
+        ixz="-8.2098E-12"
+        iyy="4.7745E-06"
+        iyz="-8.2098E-12"
+        izz="3.471E-06" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0.097858"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://ROV_Product04/meshes/joint7.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0 0 1 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0.097858"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://ROV_Product04/meshes/joint7.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="fan7"
+    type="revolute">
+    <origin
+      xyz="-0.27087 -0.26163 -0.097858"
+      rpy="0 0 0" />
+    <parent
+      link="base_link" />
+    <child
+      link="joint7" />
+    <axis
+      xyz="0.70711 -0.70711 0" />
+    <limit
+      lower="1000000000"
+      upper="1000000000"
+      effort="0"
+      velocity="0" />
+  </joint>
+  <link
+    name="joint8">
+    <inertial>
+      <origin
+        xyz="3.6059E-08 3.6059E-08 9.2981E-16"
+        rpy="0 0 0" />
+      <mass
+        value="0.013259" />
+      <inertia
+        ixx="4.7743E-06"
+        ixy="1.3036E-06"
+        ixz="-3.4296E-19"
+        iyy="4.7743E-06"
+        iyz="2.8131E-19"
+        izz="3.4707E-06" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0.097858"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://ROV_Product04/meshes/joint8.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0 0 1 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0.097858"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://ROV_Product04/meshes/joint8.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="fan8"
+    type="revolute">
+    <origin
+      xyz="-0.27087 0.26163 -0.097858"
+      rpy="0 0 0" />
+    <parent
+      link="base_link" />
+    <child
+      link="joint8" />
+    <axis
+      xyz="0.70711 0.70711 0" />
+    <limit
+      lower="1000000000"
+      upper="1000000000"
+      effort="0"
+      velocity="0" />
+  </joint>
+</robot>
