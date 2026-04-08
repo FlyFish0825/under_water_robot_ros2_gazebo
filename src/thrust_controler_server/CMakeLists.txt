@@ -5,7 +5,7 @@
 cmake_minimum_required(VERSION 3.20)
 
 # 给我们的工厂（项目）起个名字
-project(thrust_controler)
+project(thrust_controler_server)
 
 # 打开编译器的小助手，方便以后你用写代码软件（比如 VSCode）时有代码提示
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
@@ -49,7 +49,7 @@ add_library(ThrustAllocationSolver SHARED
 
 # 2. 做三个可以跑的“玩具车”（可执行文件，里面有 main 函数的程序）
 # add_executable 的意思是把 .cpp 文件变成一个可以双击或者用命令运行的程序
-add_executable(thrust_controler src/thrust_controler.cpp)
+add_executable(thrust_controler_server src/thrust_controler_server.cpp)
 add_executable(pubilsh_robot_state src/pubilsh_robot_state.cpp)
 
 
@@ -64,7 +64,7 @@ target_include_directories(ThrustAllocationSolver PRIVATE
   ${CMAKE_CURRENT_SOURCE_DIR}/include
 )
 
-target_include_directories(thrust_controler PRIVATE
+target_include_directories(thrust_controler_server PRIVATE
   /usr/include/eigen3
   ${CMAKE_CURRENT_SOURCE_DIR}/include
 )
@@ -81,13 +81,13 @@ target_link_libraries(ThrustAllocationSolver
 
 # 2. 组装推力控制器（它需要我们的通用电池，还需要数学工具和 ROS 2 基础）
 # target_link_libraries 专门用来接 C++ 原生的库
-target_link_libraries(thrust_controler
+target_link_libraries(thrust_controler_server
   ThrustAllocationSolver
   osqp::osqp
   OsqpEigen::OsqpEigen
 )
 # ament_target_dependencies 是 ROS 2 特有的快捷指令，专门用来接 ROS 2 的库
-ament_target_dependencies(thrust_controler 
+ament_target_dependencies(thrust_controler_server 
   rclcpp 
   std_msgs 
   rov_interfaces
@@ -115,11 +115,11 @@ ament_target_dependencies(pubilsh_robot_state
 # =========================================================
 # 程序做好了，但还丢在工厂的车间里。
 # install 的作用是把做好的程序放到商店的货架上（放到 Linux 的系统识别目录里）
-# 只有 install 了，你在终端输入 `ros2 run thrust_controler xxx` 时系统才能找到它！
+# 只有 install 了，你在终端输入 `ros2 run thrust_controler_server xxx` 时系统才能找到它！
 
 # 上架可执行文件 (DESTINATION lib/${PROJECT_NAME} 是 ROS 2 规定的货架位置)
 install(TARGETS
-  thrust_controler
+  thrust_controler_server
   pubilsh_robot_state
   
   DESTINATION lib/${PROJECT_NAME}
@@ -143,5 +143,5 @@ if(BUILD_TESTING)
   ament_lint_auto_find_test_dependencies()
 endif()
 
-# 告诉 ROS 2 系统：“这个叫 thrust_controler 的大礼包我做完啦，请打包验收！”
+# 告诉 ROS 2 系统：“这个叫 thrust_controler_server 的大礼包我做完啦，请打包验收！”
 ament_package()

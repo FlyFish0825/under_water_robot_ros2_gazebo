@@ -2,7 +2,7 @@
 #include <memory>
 #include <string>
 #include <vector>
-#include "thrust_controler/ThrustAllocationSolver.hpp"
+#include "ThrustAllocationSolver.hpp"
 #include "rclcpp/rclcpp.hpp"
 #include "std_msgs/msg/float64.hpp"
 

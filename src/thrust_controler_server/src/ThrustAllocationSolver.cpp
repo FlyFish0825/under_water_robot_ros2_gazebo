@@ -1,4 +1,4 @@
-#include "thrust_controler/ThrustAllocationSolver.hpp"
+#include "ThrustAllocationSolver.hpp"
 
 void ThrustAllocationSolver::addThruster(
     const Eigen::Vector3d &position,

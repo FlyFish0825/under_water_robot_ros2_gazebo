@@ -16,7 +16,7 @@ class ForceClient(Node):
         self.state = [0]*12
         super().__init__('thrust_control')
         # 参数：指定推进器编号与推力值8*1
-        self.declare_parameter("force_array", [0.0, 0.0, 0.0, 0.0, 0.0, 0.0])
+        self.declare_parameter("force_array", [0.0, 0.0, -100.0, 0.0, 0.0, 0.0])
         self.client = self.create_client(SetForce, 'set_desired_force')
         # 阻塞等待服务上线
         while not self.client.wait_for_service(timeout_sec=1.0):

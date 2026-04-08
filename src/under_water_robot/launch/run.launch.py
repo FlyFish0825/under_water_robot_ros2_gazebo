@@ -101,17 +101,17 @@ def generate_launch_description():
     )
 
 
-    # thrust_control_node = Node(
-    #     package='thrust_controler',
-    #     executable='thrust_controler',
-    #     output='screen'
-    # )
+    thrust_control_node = Node(
+        package='thrust_controler_server',
+        executable='thrust_controler_server',
+        output='screen'
+    )
 
    
 
     return LaunchDescription([
         set_plugin_path,
-        gz_sim,
         bridge,
-        # thrust_control_node,
+        thrust_control_node,
+        gz_sim,
     ])
