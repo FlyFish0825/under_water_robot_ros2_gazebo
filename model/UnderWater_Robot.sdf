@@ -55,7 +55,7 @@
     <link name='base_link'>
       <inertial>
         <pose>-0.0059136 -2.0566e-18 -0.099621 0 0 0</pose>
-        <mass>31.677</mass>
+        <mass>80.677</mass>
         <inertia>
           <ixx>0.31402999999999998</ixx>
           <ixy>0</ixy>
@@ -69,7 +69,7 @@
         <pose>0 0 0 0 0 0</pose>
         <geometry>
           <box>
-            <size>0.6 0.6 0.15</size>
+            <size>0.6 0.6 0.2</size>
           </box>
         </geometry>
       </collision>

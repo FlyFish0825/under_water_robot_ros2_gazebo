@@ -2,24 +2,24 @@
 #include <string>
 
 // Ignition 头文件
-#include <ignition/transport/Node.hh>
-#include <ignition/msgs/pose_v.pb.h>
-#include <ignition/math/Pose3.hh>
-#include <ignition/math/Matrix4.hh>
 
+#include <ignition/transport.hh>
+#include <ignition/msgs.hh>
+#include <ignition/math.hh>
 // ROS 2 头文件
 #include <rclcpp/rclcpp.hpp>
-#include <nav_msgs/msg/odometry.hpp> // 【新增】标准的里程计消息类型，包含位姿和速度
-
+#include <nav_msgs/msg/odometry.hpp>
+#include <geometry_msgs/msg/pose_stamped.hpp> 
+#include <geometry_msgs/msg/twist.hpp>
 class StateBridgeNode : public rclcpp::Node
 {
 public:
     StateBridgeNode() : Node("state_bridge_node"), last_time_(-1.0)
     {
         // 1. 初始化 ROS 2 发布者
-        // 发布到 "/robot/odom" 话题，队列长度设为 10
-        std::string ROS2_topic = "/robot/odom";
-        odom_pub_ = this->create_publisher<nav_msgs::msg::Odometry>(ROS2_topic, 10);
+        // 发布到 "/robot/pose" 话题，队列长度设为 10
+        std::string ROS2_topic = "/robot/pose";
+        robot_pose_pub_ = this->create_publisher<nav_msgs::msg::Odometry>(ROS2_topic, 10);
 
         // 2. 初始化 Ignition 订阅者
         std::string topic = "/model/UnderWater_Robot/pose";
@@ -122,7 +122,7 @@ private:
                         odom_msg.twist.twist.angular.z = Omega_body.Z();
 
                         // 6. 发布消息！
-                        odom_pub_->publish(odom_msg);
+                        robot_pose_pub_->publish(odom_msg);
                     }
                 }
 
@@ -136,7 +136,7 @@ private:
     }
 
     // 类的私有成员变量
-    rclcpp::Publisher<nav_msgs::msg::Odometry>::SharedPtr odom_pub_;
+    rclcpp::Publisher<nav_msgs::msg::Odometry>::SharedPtr robot_pose_pub_; // 【修改】改为发布 Odometry 消息
     ignition::transport::Node ign_node_;
 
     ignition::math::Pose3d last_world_pose_;

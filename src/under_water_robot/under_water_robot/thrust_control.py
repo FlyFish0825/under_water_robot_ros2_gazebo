@@ -4,7 +4,31 @@ from rclpy.parameter import Parameter
 from std_msgs.msg import Float64,Float64MultiArray
 from rov_interfaces.srv import SetForce
 from nav_msgs.msg import Odometry
+import math
 
+
+# 辅助函数：四元数转欧拉角 (弧度)
+def euler_from_quaternion(x, y, z, w):
+    """
+    将四元数转换为欧拉角 (roll, pitch, yaw)
+    """
+    # roll (x-axis rotation)
+    t0 = +2.0 * (w * x + y * z)
+    t1 = +1.0 - 2.0 * (x * x + y * y)
+    roll_x = math.atan2(t0, t1)
+
+    # pitch (y-axis rotation)
+    t2 = +2.0 * (w * y - z * x)
+    t2 = +1.0 if t2 > +1.0 else t2
+    t2 = -1.0 if t2 < -1.0 else t2
+    pitch_y = math.asin(t2)
+
+    # yaw (z-axis rotation)
+    t3 = +2.0 * (w * z + x * y)
+    t4 = +1.0 - 2.0 * (y * y + z * z)
+    yaw_z = math.atan2(t3, t4)
+
+    return roll_x, pitch_y, yaw_z # 单位：弧度
 
 
 
@@ -16,7 +40,7 @@ class ForceClient(Node):
         self.state = [0]*12
         super().__init__('thrust_control')
         # 参数：指定推进器编号与推力值8*1
-        self.declare_parameter("force_array", [0.0, 0.0, -100.0, 0.0, 0.0, 0.0])
+        self.declare_parameter("force_array", [0.0, 0.0,0.0, 0.0, 0.0, 0.0])
         self.client = self.create_client(SetForce, 'set_desired_force')
         # 阻塞等待服务上线
         while not self.client.wait_for_service(timeout_sec=1.0):
@@ -27,25 +51,30 @@ class ForceClient(Node):
         # 并将回调函数指向下面写好的 self.get_state
         self.subscription = self.create_subscription(
             Odometry,
-            '/robot/odom',
+            '/robot/pose',
             self.get_state,  # C语言视角：这里相当于传了一个函数指针
             10)
-
-
+        self.time_ = self.create_timer(0.050, self.time_callback)  # 每0.05秒调用一次发送函数
+    def time_callback(self):
+        req = SetForce.Request()
+        req.force = self.force_values  # 将 6 维数组填入 request 中
+        self.future = self.client.call_async(req)
+        self.future.add_done_callback(self.response_callback)
+        
     def send_force_request(self):
         # 1. 获取参数列表中配置的力学数组
-        force_values = self.get_parameter("force_array").value
+        self.force_values = self.get_parameter("force_array").value
         
-        if len(force_values) != 6:
-            self.get_logger().error(f"期待 6 个 force 数值，但收到 {len(force_values)} 个！")
+        if len(self.force_values) != 6:
+            self.get_logger().error(f"期待 6 个 force 数值，但收到 {len(self.force_values)} 个！")
             return
             
         # 2. 构造服务请求格式
         req = SetForce.Request()
-        req.force = force_values  # 将 6 维数组填入 request 中
+        req.force = self.force_values  # 将 6 维数组填入 request 中
         
         # 3. 异步发送给 C++ 节点
-        self.get_logger().info(f"发送力/力矩请求: {force_values}")
+        self.get_logger().info(f"发送力/力矩请求: {self.force_values}")
         self.future = self.client.call_async(req)
         self.future.add_done_callback(self.response_callback)
 

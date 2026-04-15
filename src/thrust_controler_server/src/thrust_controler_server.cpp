@@ -61,7 +61,7 @@ class ThrustControl : public rclcpp::Node
 {
 public:
   ThrustControl()
-      : Node("thrust_control")
+      : Node("thrust_controler_server")
   {
     // 1. 初始化发布者
     publishers_list_.reserve(8);
