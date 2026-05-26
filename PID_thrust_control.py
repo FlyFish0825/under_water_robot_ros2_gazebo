@@ -36,27 +36,31 @@ def euler_from_quaternion(x, y, z, w):
 
 class ForceClient(Node):
     def __init__(self):
-        # x y z 欧拉角 线速度uvw 角速度pqr   共12维状态量
-        self.state = [0]*12
         super().__init__('thrust_control')
-        # 参数：指定推进器编号与推力值8*1
-        self.declare_parameter("force_array", [0.0, 0.0,0.0, 0.0, 0.0, 0.0])
+        # x y z 欧拉角 线速度uvw 角速度pqr — 共12维状态量
+        self.state = [0.0] * 12
+
+        # PID 状态初始化
+        self._integral_error = [0.0] * 6
+        self._prev_error = [0.0] * 6       # 仅用于位置环的微分(备用)
+        self._pid_last_time = None
+
+        # 参数：期望推力（6维）和目标状态（6维: x,y,z,roll,pitch,yaw）
+        self.declare_parameter("force_array", [0.0, 0.0, 0.0, 0.0, 0.0, 0.0])
         self.declare_parameter("target_state", [0.0, 0.0, 2.5, 0.0, 0.0, 0.0])
         self.SetForce_client = self.create_client(SetForce, 'set_desired_force')
         # 阻塞等待服务上线
         while not self.SetForce_client.wait_for_service(timeout_sec=1.0):
             self.get_logger().info('正在等待 C++ 服务端 "set_desired_force" 上线...')
-        # 【修改 4】：服务一旦上线，立即调用函数发送期望力
-        self.force_values =[0.0]*6
-        # 直接在这个现有的类里创建一个订阅者
-        # 并将回调函数指向下面写好的 self.get_state
+        self.force_values = [0.0] * 6
+        # 订阅里程计话题获取状态
         self.subscription = self.create_subscription(
             Odometry,
             '/robot/pose',
-            self.get_state,  # C语言视角：这里相当于传了一个函数指针
+            self.get_state,
             10)
-       
-        self.time_ = self.create_timer(0.05 ,self.time_callback)  # 每0.001秒调用一次发送函数
+
+        self.time_ = self.create_timer(0.05, self.time_callback)  # 50ms 控制周期
 
 
 
@@ -128,17 +132,15 @@ class ForceClient(Node):
             
     def PID_control(self, target_state):
         """
-        位置/姿态 PID 控制器（含微分项，基于误差差分）。
-        - 比例 P：基于当前误差
-        - 积分 I：基于误差累积（带限幅）
-        - 微分 D：基于误差的变化率 (error - prev_error)/dt
+        位置/姿态 PID 控制器（基于位置误差 + 速度阻尼）。
+        - 比例 P：位置误差 × Kp（世界坐标系 → 转机体坐标系）
+        - 积分 I：误差累积（带限幅），消除静差
+        - 阻尼 D：用实测机体速度 × Kd，替代误差微分，避免目标突变尖峰
         """
         # ---------- 1. 时间间隔 ----------
         now = self.get_clock().now().nanoseconds / 1e9
-        if not hasattr(self, '_pid_last_time') or self._pid_last_time is None:
+        if self._pid_last_time is None:
             self._pid_last_time = now
-            self._integral_error = [0.0] * 6
-            self._prev_error = [0.0] * 6          # 上一时刻误差（用于微分）
             return [0.0] * 6
 
         dt = now - self._pid_last_time
@@ -146,61 +148,54 @@ class ForceClient(Node):
             return [0.0] * 6
         self._pid_last_time = now
 
-        # ---------- 2. 计算误差（世界坐标系） ----------
-        error_x = target_state[0] - self.state[0]
-        error_y = target_state[1] - self.state[1]
-        error_z = target_state[2] - self.state[2]
-        error_roll  = target_state[3] - self.state[3]
-        error_pitch = target_state[4] - self.state[4]
-        error_yaw   = target_state[5] - self.state[5]
+        # ---------- 2. 位置/姿态误差（世界坐标系） ----------
+        error = [0.0] * 6
+        for i in range(6):
+            error[i] = target_state[i] - self.state[i]
 
         # 姿态误差归一化到 [-pi, pi]
-        error_roll  = math.atan2(math.sin(error_roll),  math.cos(error_roll))
-        error_pitch = math.atan2(math.sin(error_pitch), math.cos(error_pitch))
-        error_yaw   = math.atan2(math.sin(error_yaw),   math.cos(error_yaw))
+        error[3] = math.atan2(math.sin(error[3]), math.cos(error[3]))
+        error[4] = math.atan2(math.sin(error[4]), math.cos(error[4]))
+        error[5] = math.atan2(math.sin(error[5]), math.cos(error[5]))
 
-        error = [error_x, error_y, error_z, error_roll, error_pitch, error_yaw]
-
-
-        #print(f"当前状态: {self.state[0]:.3f}, {self.state[1]:.3f}, {self.state[2]:.3f}, {self.state[3]:.3f}, {self.state[4]:.3f}, {self.state[5]:.3f}")
-
-
-        # ---------- 3. PID 参数（P, I, D 均非零） ----------
+        # ---------- 3. PID 参数 ----------
         # 顺序: [Fx, Fy, Fz, Mx, My, Mz]
-        Kp = [100.0, 100.0, 100.0,   15.0, 15.0, 12.0]   # 比例增益
-        Ki = [1.0,   1.0,   1.05,    0.3,  0.3,  0.2]    # 积分增益
-        Kd = [10.0,  10.0,  10.0,    1.0,  1.0,  1.0]    # 微分增益（基于误差差分）
+        Kp = [100.0, 100.0, 100.0,  15.0, 15.0, 12.0]   # 比例增益
+        Ki = [1.0,   1.0,   1.05,   0.3,  0.3,  0.2]    # 积分增益
+        Kd = [20.0,  20.0,  20.0,   2.0,  2.0,  2.0]    # 速度阻尼增益（作用于实测机体速度）
 
-        # ---------- 4. 更新积分项（带限幅） ----------
+        # ---------- 4. 更新积分项（带限幅抗饱和） ----------
         for i in range(6):
             self._integral_error[i] += error[i] * dt
             limit = 50.0 if i < 3 else 20.0
             self._integral_error[i] = max(-limit, min(limit, self._integral_error[i]))
 
-        # ---------- 5. 计算微分项（误差差分） ----------
-        derivative = [0.0] * 6
-        for i in range(6):
-            derivative[i] = (error[i] - self._prev_error[i]) / dt
-
-        # ---------- 6. 计算 PID 输出（世界坐标系） ----------
+        # ---------- 5. 计算 P+I 输出（世界坐标系） ----------
         output_world = [0.0] * 6
         for i in range(6):
-            output_world[i] = (Kp[i] * error[i] +
-                            Ki[i] * self._integral_error[i] +
-                            Kd[i] * derivative[i])
+            output_world[i] = Kp[i] * error[i] + Ki[i] * self._integral_error[i]
 
-        # 保存当前误差供下一帧微分使用
-        self._prev_error = error.copy()
+        # ---------- 6. 转换 P+I 到机体坐标系 ----------
+        force_body, torque_body = self.world_to_body_force(
+            output_world[:3], output_world[3:])
 
-        # ---------- 7. 转换到机体坐标系 ----------
-        force_world  = output_world[:3]
-        torque_world = output_world[3:]
-        force_body, torque_body = self.world_to_body_force(force_world, torque_world)
+        # ---------- 7. 叠加速度阻尼（机体坐标系，直接使用实测速度） ----------
+        # self.state[6:9] = [u, v, w]  机体线速度
+        # self.state[9:12] = [p, q, r] 机体角速度
+        for i in range(3):
+            force_body[i] -= Kd[i] * self.state[6 + i]
+            torque_body[i] -= Kd[i + 3] * self.state[9 + i]
+
+        # ---------- 8. 输出限幅 ----------
+        force_limit = 500.0
+        torque_limit = 100.0
+        for i in range(3):
+            force_body[i] = max(-force_limit, min(force_limit, force_body[i]))
+            torque_body[i] = max(-torque_limit, min(torque_limit, torque_body[i]))
 
         output_force = force_body + torque_body
-        print(f"PID 输出 (机体坐标系, 含误差差分微分项): \n"
-            f"Fx:{force_body[0]:.3f}, Fy:{force_body[1]:.3f}, Fz:{force_body[2]:.3f}, \n"
-            f"Mx:{torque_body[0]:.3f}, My:{torque_body[1]:.3f}, Mz:{torque_body[2]:.3f}")
+        print(f"PID 输出 (机体):  Fx:{force_body[0]:.1f}  Fy:{force_body[1]:.1f}  Fz:{force_body[2]:.1f}  "
+              f"Mx:{torque_body[0]:.1f}  My:{torque_body[1]:.1f}  Mz:{torque_body[2]:.1f}")
         return output_force
 
 
