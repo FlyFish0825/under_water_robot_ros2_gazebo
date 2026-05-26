@@ -28,9 +28,54 @@ find_package(std_msgs REQUIRED)
 find_package(rov_interfaces REQUIRED) # 我们自己定义的专属消息箱子
 
 # 下面三个是做数学计算和矩阵的箱子 (Eigen 和 OSQP)
-find_package(Eigen3 REQUIRED)    
-find_package(osqp REQUIRED)      
-find_package(OsqpEigen REQUIRED) 
+find_package(Eigen3 REQUIRED)
+
+# ──────────────────────────────────────────
+# 第三方依赖：osqp + osqp-eigen (Eigen wrapper)
+# ──────────────────────────────────────────
+set(BUILD_TESTING OFF CACHE BOOL "" FORCE)
+set(OSQP_BUILD_DEMO_EXE OFF CACHE BOOL "" FORCE)
+set(OSQP_BUILD_UNITTESTS OFF CACHE BOOL "" FORCE)
+
+# qdldl 是 osqp 的子依赖，指向本地缓存避免从 GitHub 下载
+set(FETCHCONTENT_SOURCE_DIR_QDLDL
+  ${CMAKE_CURRENT_SOURCE_DIR}/../../third_party/qdldl
+  CACHE PATH "Local QDLDL source"
+)
+
+add_subdirectory(
+  ${CMAKE_CURRENT_SOURCE_DIR}/../../third_party/osqp
+  ${CMAKE_CURRENT_BINARY_DIR}/third_party/osqp
+  EXCLUDE_FROM_ALL
+)
+
+# add_subdirectory 不生成 osqp::osqp 别名，手动创建以满足 osqp-eigen 的依赖检查
+if(TARGET osqp AND NOT TARGET osqp::osqp)
+  add_library(osqp::osqp ALIAS osqp)
+endif()
+
+# 跳过 osqp-eigen 的 try_compile 版本检测（子进程看不到父进程 alias target）
+set(OSQP_IS_V1 TRUE)
+set(OSQP_IS_V1_FINAL TRUE)
+
+add_subdirectory(
+  ${CMAKE_CURRENT_SOURCE_DIR}/../../third_party/osqp-eigen
+  ${CMAKE_CURRENT_BINARY_DIR}/third_party/osqp-eigen
+  EXCLUDE_FROM_ALL
+)
+
+# 压制第三方库的上游警告，只影响其自身 target
+if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+  foreach(tgt OSQPLIB osqp osqpstatic)
+    if(TARGET ${tgt})
+      target_compile_options(${tgt} PRIVATE
+        -Wno-parentheses -Wno-pedantic -Wno-implicit-fallthrough)
+    endif()
+  endforeach()
+  if(TARGET OsqpEigen)
+    target_compile_options(OsqpEigen PRIVATE -Wno-extra)
+  endif()
+endif()
 
 # 下面三个是 Ignition Fortress 仿真器的箱子
 find_package(ignition-msgs8 REQUIRED)
@@ -130,6 +175,22 @@ install(TARGETS
   ThrustAllocationSolver
   DESTINATION lib
 )
+
+# 上架第三方动态库，使其运行时能被找到
+# osqp 和 OsqpEigen 通过 add_subdirectory 编译，但 install 规则需手动指定路径
+install(FILES
+  ${CMAKE_CURRENT_BINARY_DIR}/third_party/osqp/out/libosqp.so
+  DESTINATION lib
+)
+install(FILES
+  ${CMAKE_CURRENT_BINARY_DIR}/lib/libOsqpEigen.so.0.11.0
+  DESTINATION lib
+)
+install(CODE "execute_process(
+  COMMAND ${CMAKE_COMMAND} -E create_symlink
+    libOsqpEigen.so.0.11.0 libOsqpEigen.so
+  WORKING_DIRECTORY \"${CMAKE_INSTALL_PREFIX}/lib\"
+)")
 
 
 # =========================================================

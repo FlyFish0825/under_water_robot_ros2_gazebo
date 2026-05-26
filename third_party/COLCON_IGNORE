@@ -1,0 +1,2 @@
+# 本目录是集成的第三方源码，通过 thrust_controler_server 的 add_subdirectory 编译
+# colcon 跳过此目录，不将其视为独立 ROS 包
