@@ -554,49 +554,5 @@
       name="ignition::gazebo::systems::JointStatePublisher">
     </plugin>
 
-    <plugin filename="libTorquePlugin.so" name="under_robot::TorquePlugin">
-      <link_name>base_link</link_name>
-      <joint_name>fan1</joint_name>
-      <k_torque>0.02</k_torque>
-    </plugin>
-
-    <plugin filename="libTorquePlugin.so" name="under_robot::TorquePlugin">
-      <link_name>base_link</link_name>
-      <joint_name>fan2</joint_name>
-      <k_torque>-0.02</k_torque>
-    </plugin>
-    <plugin filename="libTorquePlugin.so" name="under_robot::TorquePlugin">
-      <link_name>base_link</link_name>
-      <joint_name>fan3</joint_name>
-      <k_torque>0.02</k_torque>
-    </plugin>
-
-    <plugin filename="libTorquePlugin.so" name="under_robot::TorquePlugin">
-      <link_name>base_link</link_name>
-      <joint_name>fan4</joint_name>
-      <k_torque>-0.02</k_torque>
-    </plugin>
- <plugin filename="libTorquePlugin.so" name="under_robot::TorquePlugin">
-      <link_name>base_link</link_name>
-      <joint_name>fan5</joint_name>
-      <k_torque>-0.0200</k_torque>
-    </plugin>
- 
-    <plugin filename="libTorquePlugin.so" name="under_robot::TorquePlugin">
-      <link_name>base_link</link_name>
-      <joint_name>fan6</joint_name>
-      <k_torque>0.0200</k_torque>
-    </plugin>
-    <plugin filename="libTorquePlugin.so" name="under_robot::TorquePlugin">
-      <link_name>base_link</link_name>
-      <joint_name>fan7</joint_name>
-      <k_torque>0.0200</k_torque>
-    </plugin>
-    <plugin filename="libTorquePlugin.so" name="under_robot::TorquePlugin">
-      <link_name>base_link</link_name>
-      <joint_name>fan8</joint_name>
-      <k_torque>-0.0200</k_torque>
-    </plugin>
-
   </model>
 </sdf>
