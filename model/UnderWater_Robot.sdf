@@ -38,16 +38,17 @@
       <yDotV>-2.0</yDotV>
       <zDotW>-10.0</zDotW>
 
-      <xU>-25.0</xU>
-      <yV>-25.0</yV>
+      <xU>-10.0</xU>
+      <yV>-15.0</yV>
       <zW>-25.0</zW>
-      <kP>-5.0</kP>
+      <kP>-3.0</kP>
       <mQ>-5.0</mQ>
       <nR>-5.0</nR>
 
-      <xUabsU>-10</xUabsU>
-      <yVabsV>-10</yVabsV>
-      <zWabsW>-10</zWabsW>
+      <!-- 绝对速度项 一般设置为0-->
+      <xUabsU>0</xUabsU>
+      <yVabsV>0</yVabsV>
+      <zWabsW>0</zWabsW>
 
     </plugin>
 
