@@ -63,10 +63,10 @@ class DepthEsoControl(Node):
         self.timer = self.create_timer(0.05, self.time_callback)
 
     def Eso_update(self, target_depth):
-        # 这里可以实现一个简单的 ESO 更新逻辑，基于当前深度观测和目标深度计算一个修正值
+        # 这里实现一个简单的 ESO 更新逻辑，基于当前深度观测和目标深度计算一个修正值
 
 
-        
+
         return
 
     def time_callback(self):
